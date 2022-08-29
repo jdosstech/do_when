@@ -105,7 +105,7 @@ def fetch_all_todos():
 	try:
 		db_conn = sqlite3.connect("stuff_to_do")
 	except Error as e:
-		logging.Error("Failed to connect to DB: "+e)
+		logging.error("Failed to connect to DB: "+e)
 		sys.exit()
 
 	cur = db_conn.cursor()
@@ -125,8 +125,6 @@ def main_loop():
 	logging.debug(rows)
 
 	for item in rows:
-
-		logging.info("Processing database item: "+ str(item[0]) + " for date " + item[2])
 
 		next_go_date = datetime.strptime(item[2], '%Y-%m-%d %H:%M:%S.%f')
 
@@ -151,7 +149,7 @@ def delete_todo(inst):
 		db_conn.commit()
 		cur.close()
 	except Error as e:
-		logging.Error("Failed to connect to DB: "+e)
+		logging.error("Failed to connect to DB: "+e)
 		sys.exit()
 
 ###################################################
@@ -176,10 +174,6 @@ def print_cli_help():
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 # Handle script args #############################
-if sys.argv.__len__() <2:
-	print_cli_help()
-	sys.exit()
-
 for i in range(sys.argv.__len__()):
 	if i == 0:
 		continue
@@ -201,11 +195,12 @@ for i in range(sys.argv.__len__()):
 			if int(sys.argv[i]) >= 0:
 				delete_todo(sys.argv[i])
 		except:
-			logging.info("Failed to convert id argument to number. Did you include one?")
+			print("Failed to convert id argument to number. Did you include one?")
 		sys.exit()
 	elif sys.argv[i] == '-s':
 		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__)
 		if is_running == False:
+			os.system("rm "+os.path.abspath(".")+"/nohup.out")
 			os.system("nohup /usr/bin/python3 "+ os.path.abspath(__file__) + "&")
 			is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__)
 			if is_running == False:
