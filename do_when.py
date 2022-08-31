@@ -131,10 +131,9 @@ def main_loop():
 		if next_go_date < datetime.today():
 			do_work(item)
 
-	t = Timer(30, main_loop)
+	t = Timer(300, main_loop)
 	t.start()
 
-	logging.critical("Done with Main_loop")
 
 ###################################################
 def delete_todo(inst):
