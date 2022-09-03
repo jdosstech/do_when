@@ -89,8 +89,12 @@ def do_work(work_item):
 		next_do_time = increment_month(x)
 	elif work_item[3] == "hourly-weekdays":
 		logging.info("hourly-weekdays is not yet supported")
-	elif work_item[3] == "weekdays":
-		logging.info("weekdays is not yet supported")
+	elif work_item[3] == "daily-weekdays":
+		wk_day_num = datetime.now().isoweekday()
+		next_do_time = x
+		while wk_day_num <= 7:
+			wk_day_num += 1
+			next_do_time = increment_day(next_do_time)
 
 	last_done_time = datetime.today()
 	
