@@ -92,9 +92,12 @@ def do_work(work_item):
 	elif work_item[3] == "daily-weekdays":
 		wk_day_num = datetime.now().isoweekday()
 		next_do_time = x
-		while wk_day_num <= 7:
-			wk_day_num += 1
+		if wk_day_num <= 4:
 			next_do_time = increment_day(next_do_time)
+		else:
+			while wk_day_num <=7:
+				wk_day_num += 1
+				next_do_time = increment_day(next_do_time)
 
 	last_done_time = datetime.today()
 	
@@ -219,5 +222,9 @@ for i in range(sys.argv.__len__()):
 	# Handle script args #############################
 
 
-main_loop()
+is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__)
+if is_running == True:
+	print("Already running as proc num "+str(proc_num))
+else:
+	main_loop()
 
