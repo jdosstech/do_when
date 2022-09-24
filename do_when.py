@@ -189,7 +189,7 @@ for i in range(sys.argv.__len__()):
 		list_todos()
 		sys.exit()
 	elif sys.argv[i] == '-k':
-		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__, os.getpid())
+		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
 		if is_running == True:
 			kill_str = "kill -15 "+str(proc_num)
 			os.system(kill_str)
@@ -206,11 +206,12 @@ for i in range(sys.argv.__len__()):
 			print("Failed to convert id argument to number. Did you include one?")
 		sys.exit()
 	elif sys.argv[i] == '-s':
-		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__, os.getpid())
+		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
 		if is_running == False:
 			os.system("rm "+os.path.abspath(".")+"/nohup.out")
 			os.system("nohup /usr/bin/python3 "+ os.path.abspath(__file__) + "&")
-			is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__, os.getpid())
+			is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
+			print(os.path.abspath(__file__))
 			if is_running == False:
 				print("Did not start!")
 			else:
@@ -219,7 +220,7 @@ for i in range(sys.argv.__len__()):
 			print("Already running as proc num "+str(proc_num))
 		sys.exit()
 	elif sys.argv[i] == '-r':
-		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__, os.getpid())
+		is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
 		if is_running == True:
 			kill_str = "kill -15 "+str(proc_num)
 			os.system(kill_str)
@@ -232,7 +233,7 @@ for i in range(sys.argv.__len__()):
 	# Handle script args #############################
 
 
-is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", __file__, os.getpid())
+is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
 if is_running == True:
 	print("Already running as proc num "+str(proc_num))
 else:
