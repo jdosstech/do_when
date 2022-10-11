@@ -22,6 +22,14 @@ def leap_year(y):
 			return False
 
 ###################################################
+def increment_year(date):
+
+	new_date = date.replace(year=date.year+1)
+
+	logging.debug("new_date in increment_month: "+str(new_date))
+	return new_date
+
+###################################################
 def increment_month(date):
 
 	if date.month == 12:
@@ -77,7 +85,9 @@ def do_work(work_item):
 
 	x=datetime.strptime(work_item[2], '%Y-%m-%d %H:%M:%S.%f')
 
-	if work_item[3] == "hourly":
+	if work_item[3] == "yearly":
+		next_do_time = increment_year(x)
+	elif work_item[3] == "hourly":
 		next_do_time = increment_hour(x) 
 	elif work_item[3] == "daily":
 		next_do_time = increment_day(x)
