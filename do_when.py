@@ -240,7 +240,7 @@ for i in range(sys.argv.__len__()):
 	elif sys.argv[i] == "-h" or sys.argv[i] != "-r" or sys.argv[i] != "-s" or sys.argv[i] != "-k" or sys.argv[i] != "-d" or sys.argv[i] != "-l":
 		print_cli_help()
 		sys.exit()
-	# Handle script args #############################
+# Handle script args #############################
 
 
 is_running, proc_num = ps_utils.check_process_running_by_file_name("Python", os.path.abspath(__file__), os.getpid())
