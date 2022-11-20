@@ -65,7 +65,7 @@ def increment_hour(date):
 	else:
 		new_date = date.replace(hour=date.hour+1)
 
-	logging.debug("new_date in increment_month: "+new_date)
+	logging.debug("new_date in increment_month: "+str(new_date))
 	return new_date
 
 ###################################################
