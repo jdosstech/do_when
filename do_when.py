@@ -88,6 +88,8 @@ def do_work(work_item):
 	if work_item[3] == "yearly":
 		next_do_time = increment_year(x)
 	elif work_item[3] == "hourly":
+		x = datetime.today()
+		# Sine an hour is pretty short don't want the timing to be absolute.
 		next_do_time = increment_hour(x) 
 	elif work_item[3] == "daily":
 		next_do_time = increment_day(x)
