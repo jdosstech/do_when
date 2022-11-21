@@ -1,5 +1,5 @@
 # do_when
-A background process to open URLs or apps at different intervals. MAC Only for now.
+A background process to open URLs or apps (or whatever MAC OS Terminal "open" command can open) at different intervals. MAC Only for now.
 
 1. Clone this repo
 2. Create a sqllite3 DB called stuff_to_do in the same dir as the repo
