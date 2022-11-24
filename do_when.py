@@ -13,13 +13,13 @@ import ps_utils
 ###################################################
 def leap_year(y):
 	if y % 400 == 0:
-			return True
+		return True
 	if y % 100 == 0:
-			return False
+		return False
 	if y % 4 == 0:
-			return True
+		return True
 	else:
-			return False
+		return False
 
 ###################################################
 def increment_year(date):
@@ -49,8 +49,8 @@ def increment_day(date):
 		else:
 			new_date = date.replace(day=date.day+1)
 	elif (date.month == 2 and date.day == 28) or (date.month in [1,3,5,7,8,10,12] and date.day == 31) or (date.month in [4,6,9,11] and date.day == 30):
-				temp_date = date.replace(day=1)
-				new_date = increment_month(temp_date)
+			temp_date = date.replace(day=1)
+			new_date = increment_month(temp_date)
 	else:
 		new_date = date.replace(day=date.day+1)
 
