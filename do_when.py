@@ -49,8 +49,8 @@ def increment_day(date):
 		else:
 			new_date = date.replace(day=date.day+1)
 	elif (date.month == 2 and date.day == 28) or (date.month in [1,3,5,7,8,10,12] and date.day == 31) or (date.month in [4,6,9,11] and date.day == 30):
-			temp_date = date.replace(day=1)
-			new_date = increment_month(temp_date)
+		temp_date = date.replace(day=1)
+		new_date = increment_month(temp_date)
 	else:
 		new_date = date.replace(day=date.day+1)
 
@@ -157,7 +157,7 @@ def main_loop():
 ###################################################
 def delete_todo(inst):
 	logging.info("deleting todo instance "+str(inst))
-		
+
 	db_conn = None
 
 	try:
