@@ -84,12 +84,13 @@ def do_work(work_item):
 	curr = db_conn.cursor()
 
 	x=datetime.strptime(work_item[2], '%Y-%m-%d %H:%M:%S.%f')
+	next_do_time = None
 
 	if work_item[3] == "yearly":
 		next_do_time = increment_year(x)
 	elif work_item[3] == "hourly":
 		x = datetime.today()
-		# Sine an hour is pretty short don't want the timing to be absolute.
+		# Since an hour is pretty short don't want the timing to be absolute.
 		next_do_time = increment_hour(x) 
 	elif work_item[3] == "daily":
 		next_do_time = increment_day(x)
@@ -111,8 +112,9 @@ def do_work(work_item):
 				wk_day_num += 1
 				next_do_time = increment_day(next_do_time)
 
+
 	last_done_time = datetime.today()
-	
+
 	curr.execute("INSERT or REPLACE into stuff_to_do VALUES("+str(work_item[0])+",'"+work_item[1]+"','"+str(next_do_time)+"','"+work_item[3]+"','"+ str(last_done_time)+"')")
 	db_conn.commit()
 	db_conn.close()
@@ -145,12 +147,14 @@ def main_loop():
 
 	for item in rows:
 
-		next_go_date = datetime.strptime(item[2], '%Y-%m-%d %H:%M:%S.%f')
+		try:
+			next_go_date = datetime.strptime(item[2], '%Y-%m-%d %H:%M:%S.%f')
+			if next_go_date < datetime.today():
+				do_work(item)
+		except:
+			logging.debug("Item "+str(item[0])+" did not have a good date: "+item[2])
 
-		if next_go_date < datetime.today():
-			do_work(item)
-
-	t = Timer(300, main_loop)
+	t = Timer(180, main_loop)
 	t.start()
 
 
