@@ -5,6 +5,8 @@ import sqlite3
 import os
 import sys
 import ps_utils
+import pync
+
 
 ###################################################
 # Functions
@@ -71,14 +73,17 @@ def increment_hour(date):
 ###################################################
 def do_work(work_item):
 	logging.debug("Working on: "+ work_item[1] + " at " + str(datetime.now()))
-	os.system(work_item[1])
+	ret_code = os.system(work_item[1])
+	if ret_code != 0:
+		pync.notify("Return code for "+work_item[1]+" was: "+str(ret_code), execute='say '+"Return code for "+work_item[1]+" was: "+str(ret_code), title='do_when')
 
 	db_conn = None
 
 	try:
 		db_conn = sqlite3.connect("stuff_to_do")
 	except Error as e:
-		loggin.Error("Failed to connect to DB: "+e)
+		logging.Error("Failed to connect to DB: "+e)
+		pync.notify("Failed to connect to the DB", execute='say '+"Failed to connect to the DB", title='do_when')
 		sys.exit()
 
 	curr = db_conn.cursor()
@@ -111,7 +116,7 @@ def do_work(work_item):
 			while wk_day_num <=7:
 				wk_day_num += 1
 				next_do_time = increment_day(next_do_time)
-
+	# One time calls fall through
 
 	last_done_time = datetime.today()
 
@@ -127,6 +132,7 @@ def fetch_all_todos():
 		db_conn = sqlite3.connect("stuff_to_do")
 	except Error as e:
 		logging.error("Failed to connect to DB: "+e)
+		pync.notify("Failed to connect to the DB", execute='say '+"Failed to connect to the DB", title='do_when')
 		sys.exit()
 
 	cur = db_conn.cursor()
@@ -152,7 +158,10 @@ def main_loop():
 			if next_go_date < datetime.today():
 				do_work(item)
 		except:
-			logging.debug("Item "+str(item[0])+" did not have a good date: "+item[2])
+			message = "Item "+str(item[0])+" did not have a good date: "+item[2]
+			logging.debug(message)
+			if item[2].lower() != "none":
+				pync.notify(message, execute='say '+message)
 
 	t = Timer(180, main_loop)
 	t.start()
@@ -172,6 +181,7 @@ def delete_todo(inst):
 		cur.close()
 	except Error as e:
 		logging.error("Failed to connect to DB: "+e)
+		pync.notify("Failed to connect to the DB", execute='say '+"Failed to connect to the DB", title='do_when')
 		sys.exit()
 
 ###################################################
