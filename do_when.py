@@ -73,6 +73,7 @@ def increment_hour(date):
 ###################################################
 def do_work(work_item):
 	logging.debug("Working on: "+ work_item[1] + " at " + str(datetime.now()))
+	# "start" for Windows
 	ret_code = os.system(work_item[1])
 	if ret_code != 0:
 		pync.notify("Return code for "+work_item[1]+" was: "+str(ret_code), execute='say '+"Return code for "+work_item[1]+" was: "+str(ret_code), title='do_when')
@@ -120,8 +121,15 @@ def do_work(work_item):
 
 	last_done_time = datetime.today()
 
-	curr.execute("INSERT or REPLACE into stuff_to_do VALUES("+str(work_item[0])+",'"+work_item[1]+"','"+str(next_do_time)+"','"+work_item[3]+"','"+ str(last_done_time)+"')")
-	db_conn.commit()
+	try:
+		sql_cmd = """INSERT or REPLACE into stuff_to_do (id, to_do_name, next_time_to_do, repition_type, last_time_done) VALUES(?,?,?,?,?);"""
+		data_tuple = (work_item[0],work_item[1],str(next_do_time),work_item[3],str(last_done_time))
+		db_conn.execute(sql_cmd,data_tuple)
+		db_conn.commit()
+	except sqlite3.OperationalError as e:
+		pync.notify("Failed to commit tuple "+ str(work_item[0]) +" to the DB "+str(e), execute='say '+"Failed to commit tuple to the DB", title='do_when')
+
+		
 	db_conn.close()
 
 ###################################################
@@ -131,7 +139,7 @@ def fetch_all_todos():
 	try:
 		db_conn = sqlite3.connect("stuff_to_do")
 	except Error as e:
-		logging.error("Failed to connect to DB: "+e)
+		logging.error("Failed to connect to DB: "+str(e))
 		pync.notify("Failed to connect to the DB", execute='say '+"Failed to connect to the DB", title='do_when')
 		sys.exit()
 
@@ -157,8 +165,8 @@ def main_loop():
 			next_go_date = datetime.strptime(item[2], '%Y-%m-%d %H:%M:%S.%f')
 			if next_go_date < datetime.today():
 				do_work(item)
-		except:
-			message = "Item "+str(item[0])+" did not have a good date: "+item[2]
+		except ValueError as e:
+			message = "Item "+str(item[0])+" error "+str(e)
 			logging.debug(message)
 			if item[2].lower() != "none":
 				pync.notify(message, execute='say '+message)
